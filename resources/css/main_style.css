@@ -1,0 +1,929 @@
+*, *::before, *::after {
+	box-sizing: border-box;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, span {
+	margin: 0;
+	padding: 0;
+}
+
+.logo-container{
+    background-color: #1E40AF;
+    display: flex;
+    align-items: center;
+    padding-left: 50px;
+    height: 80px;
+    position: relative;
+    border-bottom: 2px solid rgb(129, 129, 129);
+}
+
+#logo-image{
+    height: auto;
+    width: 40px;
+    margin-right: 15px;
+}
+
+.logo-container h1{
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 300;
+    color: white;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 1.5rem;
+}
+
+ul{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.top-nav{
+    height: 50px;
+    width: 100%;
+    background-color: #1E40AF;
+    z-index: 9999;
+    position: sticky;
+    top: 0;
+}
+
+.menu{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap:1rem;
+    padding-left: 50px;
+}
+
+.menu li{
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.menu button{
+    height: 60%;
+    background:none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    font-family: "Roboto", sans-serif;
+}
+
+
+.menu button::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: white;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease, transform-origin 0s;
+}
+
+.menu button:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+#biglogo{
+    display: none;
+}
+
+.hidden-when-mobile {
+    display: none;
+}
+
+.menu-icn{
+    display: none;
+}
+
+.menu-btn{
+    display: none;
+    cursor: pointer;
+}
+
+.menu li:nth-child(4){
+    display: none;
+}
+
+.logo-container a{
+    color: rgb(228, 228, 228);
+    position: absolute;
+    right: 30px;
+}
+
+@media (max-width: 600px) {
+    .top-nav{
+        transition: 0.2s ease-in-out;
+        position: fixed;
+        right: -250px;
+        border-left:2px solid rgb(129, 129, 129);
+        top:0;
+        width: 250px;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 150px auto 50px;
+    }
+
+    .logo-container{
+       position: sticky;
+       top:0;
+       z-index: 99;
+    }
+    .menu-btn{
+        display: block;
+        position: absolute;
+        right: 30px;
+        border: none;
+        background: none;
+        color: white;
+        font-size: 1.4rem;
+    }
+    .menu{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: unset;
+        gap:unset;
+        padding-left: 0;
+    }
+
+    .menu li:nth-child(4){
+        display: flex;
+    }
+
+    .menu li{
+        height: 50px;
+        display: flex;
+        align-items: center;
+    }
+
+    .menu button {
+        border-bottom: none !important;
+        background: none !important;
+        display: grid;
+        grid-template-columns: 25px 1fr;
+        grid-template-rows: 1fr;
+        width: 100%;
+        padding-left: 30px;
+        padding-right: 30px;
+        gap:1rem;
+        text-align: left;
+    }
+
+    .menu button::after,
+    .menu button:hover::after {
+        display: none !important;
+    }
+
+    .hidden-when-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: 'Roboto', sans-serif;
+        font-size: 0.6rem;
+    }
+
+    #biglogo{
+        display: block;
+        width: 130px;
+        height: auto;
+        place-self: center;
+    }
+
+    .top-nav li:hover{
+        background-color: rgba(34, 71, 194, 0.784)
+    }
+
+    .menu-icn{
+        display: block;
+        width: 20px;
+        height: 20px;
+    }
+
+    .logo-container a{
+        display: none;
+    }
+}
+
+/* This is the homepage CSS */
+
+.home-body{
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.5fr auto;
+    gap:1rem;
+    padding: 1rem;
+}
+
+.home-box{
+    background-color: white;
+}
+
+.home-box:nth-child(1){
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    display: flex;
+    justify-content: center;
+}
+
+.wallet-container{
+    width: 450px;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 50px 200px 220px;
+}
+
+.wallet-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.wallet-header h1{
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+}
+
+#balance-info{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.wallet-info {
+    background: rgb(8,146,208);
+    background: linear-gradient(159deg, rgba(8,146,208,1) 0%, rgba(75,0,130,1) 100%);
+    border-radius: 10px;
+    color: white;
+    padding: 1.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.peso-icon {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(30, 144, 255, 0.10);
+    font-size: 2.2rem;
+    color: #2563eb;
+    opacity: 1;
+    font-weight: 1000;
+}
+
+.wallet-info h4{
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+.wallet-info h1{
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+}
+
+#wallet-more-info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-container{
+    padding: 1rem;
+    background-color: rgb(241, 241, 241);
+    border-radius: 15px;
+}
+
+.card-details{
+    padding: 1rem;
+    background-color: white;
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 30px auto 50px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.card-header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-name {
+  color: #2563eb;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.card-number {
+  color: #666;
+  font-size: 1em;
+}
+
+.chip-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+#wallet-option-btn{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+#wallet-option-btn img{
+    width: 20px;
+    height: 20px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+  background-color: #555;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* Lock Card Row Layout */
+.lock-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-top: 18px;
+}
+
+.lock-card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lock-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  color: #2563eb;
+  filter: invert(32%) sepia(98%) saturate(7492%) hue-rotate(212deg) brightness(95%) contrast(101%);
+}
+
+.lock-card-text h4 {
+  margin: 0;
+  font-weight: bold;
+  color: #222;
+}
+
+.lock-card-text p {
+  margin: 0;
+  color: #555;
+  font-size: 0.7rem;
+}
+
+.home-box:nth-child(2){
+    background-color: #f5f7ff;
+    padding: 2rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.home-box:nth-child(2) span{
+    display: flex;
+    align-items: center;
+    gap:1rem;
+}
+
+.home-box:nth-child(2) h1{
+    font-family: "Roboto";
+    color: #f7b724;
+}
+
+.home-box:nth-child(2) h2{
+    font-family: "Roboto";
+    color: #1E40AF;
+    margin-bottom: 0.5rem;
+}
+
+#lrn_icon{
+    filter: invert(32%) sepia(98%) saturate(7492%) hue-rotate(212deg) brightness(95%) contrast(101%);
+}
+
+.home-box:nth-child(3) {
+    background: #f9faff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.04);
+    padding: 24px 32px;
+    margin-bottom: 18px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.invoice-container{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    padding: 1rem;
+}
+
+.invoice-table {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 1rem;
+}
+.invoice-table th, .invoice-table td {
+    padding: 8px 12px;
+    text-align: left;
+}
+.invoice-table th {
+    color: #22336b;
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+.invoice-table td {
+    background: #fff;
+    color: #222;
+    vertical-align: middle;
+}
+.invoice-table img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.spending-container {
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 260px;
+    width: 100%;
+}
+.spending-container h2 {
+    color: #222b3a;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 1rem;;
+    width: 100%;
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+}
+
+#invoice-icn{
+    width: 30px;
+    height: 30px;
+}
+
+.invoice-container p{
+    font-size: 1.3rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.invoice-container h1{
+    font-size: 2rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+.invoice-container h3{
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    color: #555;
+    border-top: 2px solid rgb(229, 229, 229);
+    border-bottom: 2px solid rgb(229, 229, 229);
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+/* transaction CSS */
+
+.transaction-body{
+    width: 100%;
+    height: auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 500px auto;
+    grid-template-rows: 100px auto;
+}
+.transaction-body {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto 1fr;
+    gap: 0;
+}
+
+.myWallet {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+
+.recent-transaction {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+}
+
+.transaction-history {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+    height: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.myWallet{
+    width: 100%;
+    height: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-right: 1rem;
+    padding-left: 120px;
+    margin-bottom: 1rem;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    background: rgb(65,105,225);
+    color: white;
+    background: linear-gradient(159deg, rgba(65,105,225,1) 0%, rgba(137,207,240,1) 100%);
+    border-radius: 15px;
+    box-shadow: 4px 4px 7px rgba(30, 40, 80, 0.28);
+}
+
+
+.myWallet{
+    font-family: 'Inter', sans-serif;
+}
+
+.myWallet p{
+    font-weight:100;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+.myWallet h1{
+    font-size: 2.5rem;
+}
+
+#myWallet-icn{
+    width: 90px;
+    height: 90px;
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    filter: drop-shadow(0 10px 18px rgba(30, 40, 80, 0.38));
+}
+
+.recent-transaction{
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    padding: 1rem;
+    border: 2px solid rgb(229, 229, 229);
+}
+
+.recent-transaction span{
+    display: flex;
+    align-items: center;
+    gap:1rem;
+    margin-bottom: 1rem;
+}
+
+.transaction-table thead{
+    background-color: #1E40AF;
+    color: white;
+}
+
+.transaction-table tbody tr:nth-child(even) {
+    background-color: #e4e4e4;
+}
+
+.transaction-footer{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.transaction-footer a{
+    text-decoration: none;
+    color: #22336b;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.transaction-footer a:hover{
+    text-decoration: underline;
+}
+
+.transaction-footer img{
+    width: 13px;
+    height: 13px;
+    margin-left: 1ch;
+}
+
+/* Transaction Menu Styles */
+.transaction-menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: #fff;
+    padding: 1rem 0.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.04);
+}
+.search-input {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 180px;
+    height: 30px;
+}
+
+.sortby{
+    width: 100px;
+    height: 30px;
+    border: 2px solid #22336b;
+    color: #22336b;
+    border-radius: 5px;
+}
+.filter{
+    width: 100px;
+    height: 30px;
+    border: 2px solid #22336b;
+    color: #22336b;
+    border-radius: 5px;
+}
+
+/* Transaction and Invoice Table Styles */
+.transaction-table,
+.super-invoice-table {
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+.transaction-table th,
+.super-invoice-table th {
+    text-align: center;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    background-color: #1E40AF;
+    color: white;
+}
+.transaction-table td,
+.super-invoice-table td {
+    padding: 8px;
+    text-align: center;
+}
+.transaction-table tbody tr:nth-child(even),
+.super-invoice-table tbody tr:nth-child(even) {
+    background-color: #e4e4e4;
+}
+.credit {
+    color: #22c55e;
+    font-weight: 600;
+}
+.debit {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.filter-icn{
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 470px) {
+    .search-input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+  .home-box:nth-child(3) {
+    padding: 10px 4vw;
+    min-height: 200px;
+  }
+  .invoice-table th, .invoice-table td {
+    padding: 6px 4px;
+    font-size: 0.95rem;
+  }
+  .invoice-table img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .transaction-body{
+        width: 100%;
+        height: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .myWallet h2{
+        font-size: 1.2rem;
+    }
+    .myWallet p{
+        font-weight:100;
+        font-size: 0.8rem;
+        margin-top: 0.3rem;
+    }
+
+    .myWallet h1{
+        font-size: 1.4rem;
+    }
+
+}
+
+@media (max-width: 950px) {
+    .transaction-body {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 1.5rem;
+    }
+
+    .myWallet {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+    }
+
+    .recent-transaction {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+    }
+
+    .transaction-history {
+        grid-column: 1 / 2;
+        grid-row: 3 / 4;
+        height: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 850px) {
+    .home-box:nth-child(2){
+        width: 100%;
+    }
+    .home-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: 150px auto auto;
+    }
+
+    .home-box:nth-child(1) {
+        grid-row: 2;
+        grid-column: 1;
+    }
+    .home-box:nth-child(2) {
+        grid-row: 1;
+        grid-column: 1;
+    }
+    .home-box:nth-child(3) {
+        grid-row: 3;
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 500px) {
+    .wallet-container {
+        width: 100%;
+    }
+
+    .wallet-info h4 {
+        font-size: 1rem;
+    }
+   
+    .card-details h4 {
+        font-size: 1rem;
+    }
+    .card-header-info .card-name {
+        font-size: 1rem;
+    }
+    .card-header-info .card-number {
+        font-size: 0.9rem;
+    }
+    .lock-card-row {
+        padding: 10px 8px;
+    }
+    .lock-card-text h4 {
+        font-size: 1rem;
+    }
+    .lock-card-text p {
+        font-size: 0.7rem;
+    }
+    .lock-icon {
+        width: 18px;
+        height: 18px;
+    }
+    .card-container{
+        padding: 0.5rem;
+    }
+    .wallet-container{
+        padding: 0.5rem;
+    }
+    .home-box:nth-child(2) h2{
+        font-size: 1.2rem;
+    }
+    .home-box:nth-child(2) h1{
+        font-size: 1.5rem;
+    }
+}
+
