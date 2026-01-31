@@ -18,7 +18,7 @@ class Student extends Model
         'RFIDTag',
         'FirstName',
         'MiddleInitial',
-        'FullName',
+        'LastName',
         'GradeLevelID',
         'StrandID',
         'SectionID',

@@ -10,9 +10,20 @@
                 </div>
                 <div class="wallet-info">
                     <h4>Total Balance</h4>
-                    <span id="balance-info"><h1>&#x20B1;</h1><h1 id="balance-amount">100.00</h1></span>
+                    <span id="balance-info"><h1>&#x20B1;</h1><h1 id="balance-amount">{{ isset($student) && isset($student->Balance) ? number_format($student->Balance, 2) : '0.00' }}</h1></span>
                     <p>&#9733;&#9733;&#9733;&#9733;&#9733;</p>
-                    <span id="wallet-more-info"><p id="rfid-holder">124-578-9089</p><p>January 2024</p></span>
+                    <span id="wallet-more-info">
+                        <p id="rfid-holder">
+                            {{ (isset($student) && !empty($student->LRN)) ? $student->LRN : '0000000000' }}
+                        </p>
+                        <p>
+                            @if(isset($student) && !empty($student->DateCreated))
+                                {{ \Carbon\Carbon::parse($student->DateCreated)->format('F Y') }}
+                            @else
+                                January 2024
+                            @endif
+                        </p>
+                    </span>
                     <span class="peso-icon">&#x20B1;</span>
                 </div>
                 <div class="card-container">
@@ -20,8 +31,20 @@
                         <h4>Card Details</h4>
                         <div class="card-header">
                         <div class="card-header-info">
-                            <span class="card-name">Princess R. Benigno</span>
-                            <span class="card-number">123-456-7890</span>
+                            <span class="card-name">
+                                @if(isset($student))
+                                    {{ $student->FirstName }} {{ $student->LastName ?? '' }} {{ $student->MiddleInitial ?? '' }}
+                                @else
+                                    Who are You?
+                                @endif
+                            </span>
+                            <span class="card-number">
+                                @if(isset($student) && !empty($student->RFIDTag))
+                                    {{ $student->RFIDTag }}
+                                @else
+                                    0000000000
+                                @endif
+                            </span>
                         </div>
                         <img src="/images/chip.png" class="chip-icon" alt="chip">
                         </div>
@@ -34,7 +57,7 @@
                                 </div>
                             </div>
                             <label class="switch">
-                                <input type="checkbox">
+                                <input type="checkbox" id="lock-switch" data-student-id="{{ isset($student) ? $student->StudentID : '' }}" {{ (isset($student) && $student->IsBlocked) ? 'checked' : '' }}>
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -44,55 +67,52 @@
         </div>
         <div class="home-box">
             <h2>WELCOME,</h2>
-            <h1>GIVEN SURNAME M.I.</h1>
-            <span><img src="/images/lrn.png" id="lrn_icon"><p>102450090026</p></span>
+            <h1>
+                @if(isset($student))
+                    {{ $student->FirstName }} {{ $student->LastName ?? '' }} {{ $student->MiddleInitial ?? '' }}
+                @else
+                    GIVEN SURNAME M.I.
+                @endif
+            </h1>
+            <span><img src="/images/lrn.png" id="lrn_icon"><p>{{ (isset($student) && !empty($student->LRN)) ? $student->LRN : '0000000000' }}</p></span>
         </div>
         <div class="home-box">
             <div class="spending-container">
                 <h2>My Invoice &nbsp;<img src="/images/invoice.png" id="invoice-icn"></h2>
                 <div class="invoice-container">
                     <p>Today's Spending</p>
-                    <h1>&#x20B1; 100.00</h1>
+                    <h1>&#x20B1; {{ isset($dailySpending) ? number_format($dailySpending, 2) : '0.00' }}</h1>
                     <h3>Recent Purchases</h3>
                     <table class="invoice-table">
                         <thead>
-                                <tr>
-                                    <th colspan="2">Item Name</th>
-                                    <th>Price</th>
-                                    <th>Date</th>
+                            <tr>
+                                <th style="width:50%">Purchased</th>
+                                <th style="width:25%">Price</th>
+                                <th style="width:30%">Date</th>
                             </tr>
                         </thead>
                         <tbody>
+                        @if(isset($recentOrders) && count($recentOrders) > 0)
+                            @foreach($recentOrders as $orderIndex => $order)
+                                <tr>
+                                    <td class="purchased-cell" style="width:50%">
+                                        <div class="purchased-scroll">
+                                            @foreach($order['items'] as $item)
+                                                <span style="display:inline-block; margin-bottom:4px;">
+                                                    {{ $item['ProductName'] }} ({{ $item['Quantity'] }})@if(!$loop->last), @endif
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </td>
+                                    <td style="width:25%">₱{{ number_format($order['total'], 2) }}</td>
+                                    <td style="width:30%">{{ \Carbon\Carbon::parse($order['date'])->format('Y-m-d') }}</td>
+                                </tr>
+                            @endforeach
+                        @else
                             <tr>
-                                <td><img src="/images/sample.png" alt="item" style="width:32px;height:32px;"></td>
-                                <td>Sample Item</td>
-                                <td>₱50.00</td>
-                                <td>2026-01-29</td>
+                                <td colspan="3">No recent purchases found.</td>
                             </tr>
-                            <tr>
-                                <td><img src="/images/sample.png" alt="item" style="width:32px;height:32px;"></td>
-                                <td>Sample Item</td>
-                                <td>₱50.00</td>
-                                <td>2026-01-29</td>
-                            </tr>
-                            <tr>
-                                <td><img src="/images/sample.png" alt="item" style="width:32px;height:32px;"></td>
-                                <td>Sample Item</td>
-                                <td>₱50.00</td>
-                                <td>2026-01-29</td>
-                            </tr>
-                            <tr>
-                                <td><img src="/images/sample.png" alt="item" style="width:32px;height:32px;"></td>
-                                <td>Sample Item</td>
-                                <td>₱50.00</td>
-                                <td>2026-01-29</td>
-                            </tr>
-                            <tr>
-                                <td><img src="/images/sample.png" alt="item" style="width:32px;height:32px;"></td>
-                                <td>Sample Item</td>
-                                <td>₱50.00</td>
-                                <td>2026-01-29</td>
-                            </tr>
+                        @endif
                         </tbody>
                     </table>
                 </div>
