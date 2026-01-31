@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		'/student/credit',      // CREDIT
 		'/student/transaction', // TRANSACTIONS
 		'/student/setting',     // SETTINGS
-		'/'                     // LOG OUT (redirect to welcome, or implement logout)
+		'/student/logout'       // LOG OUT (end session)
 	];
 
 	menuButtons.forEach((btn, idx) => {
@@ -82,6 +82,42 @@ window.addEventListener('DOMContentLoaded', function() {
 				alertWindow.style.display = 'none';
 			}, 500); // match fade-out duration in CSS
 		}, 2500); // 2s visible + 0.5s slide = 2.5s, then fade
+	}
+});
+
+// Payment method sliding logic
+document.addEventListener('DOMContentLoaded', function() {
+	const movingWindow = document.querySelector('.moving-window');
+	const visaBtn = document.getElementById('visa-btn');
+	const mastercardBtn = document.getElementById('mastercard-btn');
+	const gcashBtn = document.getElementById('gcash-btn');
+	const btns = [visaBtn, mastercardBtn, gcashBtn];
+
+	function setActiveBtn(activeBtn) {
+		btns.forEach(btn => {
+			if (btn) btn.classList.remove('active');
+		});
+		if (activeBtn) activeBtn.classList.add('active');
+	}
+
+	if (movingWindow && visaBtn && mastercardBtn && gcashBtn) {
+		visaBtn.addEventListener('click', function() {
+			movingWindow.classList.add('visa-active');
+			movingWindow.classList.remove('mastercard-active', 'gcash-active');
+			setActiveBtn(visaBtn);
+		});
+		mastercardBtn.addEventListener('click', function() {
+			movingWindow.classList.add('mastercard-active');
+			movingWindow.classList.remove('visa-active', 'gcash-active');
+			setActiveBtn(mastercardBtn);
+		});
+		gcashBtn.addEventListener('click', function() {
+			movingWindow.classList.add('gcash-active');
+			movingWindow.classList.remove('visa-active', 'mastercard-active');
+			setActiveBtn(gcashBtn);
+		});
+		// Set initial active button
+		setActiveBtn(visaBtn);
 	}
 });
 

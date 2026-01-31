@@ -186,4 +186,12 @@ class StudentController extends Controller
             'message' => $student->IsBlocked ? 'Card locked.' : 'Card unlocked.'
         ]);
     }
+    /**
+     * Log out the student and end the session.
+     */
+    public function logout(Request $request)
+    {
+        $request->session()->flush();
+        return redirect('/');
+    }
 }

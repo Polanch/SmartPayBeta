@@ -24,6 +24,10 @@ Route::middleware(['student'])->group(function () {
 // Student login route
 Route::post('/student/login', [StudentController::class, 'studentLogin'])->name('student.login');
 
+
 // AJAX route to toggle lock status
 Route::post('/student/toggle-lock', [StudentController::class, 'toggleLock'])->name('student.toggleLock');
+
+// Student logout route
+Route::get('/student/logout', [StudentController::class, 'logout'])->name('student.logout');
 

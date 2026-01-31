@@ -19,7 +19,7 @@
         <img src="/images/smartpay_logo.png" alt="logo" id="logo-image">
         <h1>SMARTPAY</h1>
         <button class="menu-btn">&#9776;</button>
-        <a href="">Log out</a>
+        <a href="/student/logout">Log out</a>
     </div>
     <div class="top-nav">
         <img src="/images/smartpay_logo.png" alt="" id="biglogo">
