@@ -1,3 +1,38 @@
+// Avatar upload: show file dialog and preview image
+document.addEventListener('DOMContentLoaded', function() {
+	const changePfpBtn = document.getElementById('change-pfp-btn');
+	const avatarInput = document.getElementById('avatar-input');
+	const mypfp = document.getElementById('mypfp');
+	if (changePfpBtn && avatarInput && mypfp) {
+		changePfpBtn.addEventListener('click', function(e) {
+			e.preventDefault();
+			avatarInput.click();
+		});
+		avatarInput.addEventListener('change', function() {
+			if (this.files && this.files[0]) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					mypfp.src = e.target.result;
+				};
+				reader.readAsDataURL(this.files[0]);
+			}
+		});
+	}
+});
+// Prevent form submission unless TOS and Privacy Policy are checked
+document.addEventListener('DOMContentLoaded', function() {
+	const settingForm = document.querySelector('form[action$="/student/setting/update"]');
+	if (settingForm) {
+		settingForm.addEventListener('submit', function(e) {
+			const tos = document.getElementById('accept_tos');
+			const privacy = document.getElementById('accept_privacy');
+			if (!tos?.checked || !privacy?.checked) {
+				e.preventDefault();
+				alert('You must agree to the Terms and Conditions and Privacy Policy to proceed.');
+			}
+		});
+	}
+});
 
 document.addEventListener('DOMContentLoaded', function() {
 	// ...existing code...

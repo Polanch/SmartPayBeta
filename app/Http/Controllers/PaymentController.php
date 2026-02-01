@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
 use App\Models\Student;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -121,4 +122,25 @@ class PaymentController extends Controller
 			return redirect()->back()->with('error', 'PayMongo error: ' . $e->getMessage());
 		}
 	}
+
+	// Handle PayMongo webhook for GCash payment confirmation
+    public function handlePaymongoWebhook(Request $request)
+    {
+		$payload = $request->all();
+		if (
+			isset($payload['data']['attributes']['status']) &&
+			$payload['data']['attributes']['status'] === 'paid'
+		) {
+			$email = $payload['data']['attributes']['billing']['email'] ?? null;
+			$amount = $payload['data']['attributes']['amount'] ?? 0;
+			if ($email && $amount) {
+				$student = \App\Models\Student::whereRaw('LOWER(gmail) = ?', [strtolower($email)])->first();
+				if ($student) {
+					$student->Balance += $amount / 100; // Convert centavos to pesos
+					$student->save();
+				}
+			}
+		}
+		return response()->json(['status' => 'ok']);
+    }
 }

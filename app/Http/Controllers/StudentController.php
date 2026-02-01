@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -140,7 +139,58 @@ class StudentController extends Controller
         return view('transaction', compact('student', 'recentOrder', 'allPurchases'));
     }
     public function setting() {
-        return view('setting');
+        $student = null;
+        if (session()->has('student_id')) {
+            $student = \App\Models\Student::find(session('student_id'));
+        }
+        return view('setting', compact('student'));
+    }
+
+     public function update(Request $request)
+    {
+        if (!session()->has('student_id')) {
+            return redirect()->back()->with('error', 'Not authenticated.');
+        }
+        $student = Student::find(session('student_id'));
+        if (!$student) {
+            return redirect()->back()->with('error', 'Student not found.');
+        }
+        $validated = $request->validate([
+            'FirstName' => 'required|string|max:255',
+            'LastName' => 'required|string|max:255',
+            'MiddleInitial' => 'nullable|alpha|size:1',
+            'gmail' => 'nullable|email|max:255',
+            'Password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        $student->FirstName = $validated['FirstName'];
+        $student->LastName = $validated['LastName'];
+        $student->MiddleInitial = $validated['MiddleInitial'] ?? '';
+        $student->gmail = $validated['gmail'] ?? '';
+        if (!empty($validated['Password'])) {
+            $student->PasswordHash = Hash::make($validated['Password']);
+        }
+
+        // Handle avatar upload
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $avatar = $request->file('avatar');
+            $rfid = $student->RFIDTag;
+            $ext = $avatar->getClientOriginalExtension();
+            $filename = $rfid . '.' . $ext;
+            $avatarDir = public_path('temporary_student_images');
+            // Delete old image if it exists and is not the default
+            if (!empty($student->ImagePath)) {
+                $oldPath = $avatarDir . DIRECTORY_SEPARATOR . $student->ImagePath;
+                if (file_exists($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+            $avatar->move($avatarDir, $filename);
+            $student->ImagePath = $filename;
+        }
+
+        $student->save();
+        return redirect()->back()->with('success', 'Profile updated successfully.');
     }
     /**
      * Handle student login by LRN or Username.
