@@ -2,6 +2,9 @@
 @extends('layouts.main_layout')
 
 @section('content')
+    @if(session('success'))
+        <input type="hidden" id="success-message" value="{{ session('success') }}">
+    @endif
     <div class="setting-body">
         <div class="setting-window">
             <div class="setting-header"><h3>Profile Edit</h3></div>

@@ -18,6 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		});
 	}
+
+	// Show success popup for settings update
+	const successMessage = document.getElementById('success-message');
+	if (successMessage && successMessage.value) {
+		alert('✓ ' + successMessage.value);
+	}
 });
 
 document.addEventListener('DOMContentLoaded', function() {
