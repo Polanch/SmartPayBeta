@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tbl_orders', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('StudentID')->nullable();
-            $table->string('OrderID', 50)->unique(); // Format: "LRN-1", "LRN-2", etc.
+            $table->string('OrderID', 50); // Format: "LRN-1", "LRN-2", etc. (NOT unique - multiple items per order)
             $table->integer('ProductID')->nullable();
             $table->integer('Quantity')->default(1);
             $table->decimal('Price', 10, 2)->nullable();
