@@ -79,22 +79,6 @@
                             </div>
                         </div>
                     </form>
-                <div class="setting-tos">
-                    <div class="tos">
-                        <div class="tos-box">
-                            <h2>Terms and Conditions</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque dolorum explicabo quas soluta numquam, deleniti fugiat illo iure eligendi architecto, adipisci libero nihil earum aperiam doloremque accusamus error quo sunt incidunt molestiae minima rerum? Sit at tempora, aliquid quasi ad nihil, laborum eaque repudiandae voluptates vitae iusto repellat quis autem consectetur molestiae impedit? Placeat qui eaque asperiores excepturi facere deserunt, soluta expedita commodi. Repudiandae, officiis nemo temporibus mollitia iusto aperiam ab ipsum odio dolore cumque et corporis, ullam perferendis natus iure praesentium? Inventore iure, facilis, qui fuga, neque ipsam reprehenderit dolores mollitia repudiandae aut sequi! Voluptatibus provident ea quo, nemo fuga est sed unde nesciunt doloribus a reprehenderit ab id rem. Fuga officiis aliquid corporis possimus, consequuntur dignissimos alias enim dolor, modi debitis maxime, repudiandae quod iste velit. Temporibus earum commodi qui veniam eligendi, possimus modi reprehenderit asperiores? Amet aliquam quo, iure laudantium consequuntur eius facere vero autem, rerum odit dolore itaque maiores, accusamus iste veniam aut. Molestias, quia eius ut minima tempore blanditiis dignissimos sint delectus tenetur quaerat quo minus corrupti architecto a maiores et. Dignissimos vitae consequatur nemo, magnam repellat magni eos cupiditate corporis praesentium. Sint, ipsa, iure quia obcaecati consequuntur dolorem cum nisi quos unde aspernatur odit quam, sapiente suscipit culpa quae veniam vel praesentium consectetur? Suscipit, deleniti hic iste autem similique consequatur in dicta iure? Mollitia ducimus minus at ex ipsum dolorum aspernatur. Eaque ipsam nesciunt nihil debitis? Tempore saepe doloribus, suscipit, ex similique modi ut architecto deserunt sapiente quas nulla aut repellat nihil? Dolorem earum reprehenderit porro qui, suscipit quam, fugit perspiciatis voluptatibus quisquam similique tenetur alias, laborum maiores corrupti dolores! Neque quibusdam, saepe provident veritatis, maiores quam esse aut voluptates dolores omnis accusantium unde totam blanditiis repellat. Deleniti modi non laboriosam repudiandae quae omnis pariatur minima earum aperiam ut voluptatem consequuntur, recusandae rerum iste ipsam possimus repellendus quidem, totam sunt. Omnis, ad. Beatae laborum saepe distinctio? Possimus reiciendis quam consequatur saepe, sit eum non at quo praesentium mollitia dolorem ducimus odit voluptas velit labore! Nisi a repellat facere, vitae quos amet! Praesentium placeat magnam, corporis impedit illo nihil aut, eveniet totam minus repudiandae, aliquam exercitationem in voluptatibus porro eos ut at inventore eius. Doloribus ab quasi neque aut cumque et fugit recusandae atque, nulla maiores excepturi commodi enim blanditiis illo quis? Voluptatibus, at iste adipisci, consequuntur officiis, culpa esse eos delectus officia autem ut! Earum recusandae voluptatibus voluptates nam quisquam soluta iusto incidunt cupiditate.</p>
-                            <span class="tos-check">
-                                <input type="checkbox" name="accept_tos" id="accept_tos">
-                                <label for="accept_tos">I agree to the Terms and Conditions</label>
-                            </span>
-                            <span class="tos-check">
-                                <input type="checkbox" name="accept_privacy" id="accept_privacy">
-                                <label for="accept_privacy">I agree to the Privacy Policy</label>
-                            </span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
