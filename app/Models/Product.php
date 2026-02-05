@@ -11,6 +11,19 @@ class Product extends Model
     public $timestamps = false;
     protected $fillable = [
         'ProductName',
+        'CategoryID',
+        'Price',
+        'ImagePath',
+        'StockStatus',
+        'TotalPieces',
+        'MinimumStockLevel',
+        'StocksPerUnit',
         // Add other fields if needed
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'CategoryID', 'CategoryID');
+    }
 }
+

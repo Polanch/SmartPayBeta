@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Menu button routing (HOME, CREDIT, TRANSACTIONS, SETTINGS, LOG OUT)
 	const menuButtons = document.querySelectorAll('.menu button');
 	const routes = [
-		'/student/home',        // HOME
+		'/student/home',
+		'/student/shop',        // HOME
 		'/student/credit',      // CREDIT
 		'/student/transaction', // TRANSACTIONS
 		'/student/setting',     // SETTINGS
@@ -154,5 +155,337 @@ document.addEventListener('DOMContentLoaded', function() {
 		// Set initial active button
 		setActiveBtn(visaBtn);
 	}
+});
+
+// Shopping Cart Functionality
+document.addEventListener('DOMContentLoaded', function() {
+	const cartToggleBtn = document.querySelector('.cart-toggle-btn');
+	const cartSidebar = document.querySelector('.cart-sidebar');
+	const cartOverlay = document.querySelector('.cart-overlay');
+	const cartCloseBtn = document.querySelector('.cart-close-btn');
+	const cartItemsContainer = document.querySelector('.cart-items');
+	const totalAmountDisplay = document.querySelector('.total-amount');
+	const cartCountDisplay = document.querySelector('.cart-count');
+	const checkoutBtn = document.querySelector('.checkout-btn');
+
+	// Initialize cart from localStorage
+	let cart = JSON.parse(localStorage.getItem('smartpayCart')) || [];
+
+	// Update cart display
+	function updateCartDisplay() {
+		const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+		cartCountDisplay.textContent = itemCount;
+
+		// Update total amount
+		const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+		totalAmountDisplay.textContent = '₱' + total.toFixed(2);
+
+		// Update cart items HTML
+		if (cart.length === 0) {
+			cartItemsContainer.innerHTML = '<div class="cart-empty"><p>Your cart is empty</p></div>';
+			checkoutBtn.disabled = true;
+		} else {
+			let itemsHTML = '';
+			cart.forEach((item, index) => {
+				itemsHTML += `
+					<div class="cart-item">
+						<div class="cart-item-image">
+							${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<div style="background-color: #f5f5f5; width: 100%; height: 100%;"></div>'}
+						</div>
+						<div class="cart-item-details">
+							<div class="cart-item-name">${item.name}</div>
+							<div class="cart-item-price">₱${item.price.toFixed(2)}</div>
+							<div class="cart-item-controls">
+								<button class="quantity-btn decrease-qty" data-index="${index}">−</button>
+								<span class="quantity-display">${item.quantity}</span>
+								<button class="quantity-btn increase-qty" data-index="${index}">+</button>
+								<button class="remove-btn" data-index="${index}">Remove</button>
+							</div>
+						</div>
+					</div>
+				`;
+			});
+			cartItemsContainer.innerHTML = itemsHTML;
+
+			// Attach event listeners to quantity buttons
+			document.querySelectorAll('.decrease-qty').forEach(btn => {
+				btn.addEventListener('click', function() {
+					const index = this.dataset.index;
+					if (cart[index].quantity > 1) {
+						cart[index].quantity--;
+					} else {
+						cart.splice(index, 1);
+					}
+					saveCart();
+					updateCartDisplay();
+				});
+			});
+
+			document.querySelectorAll('.increase-qty').forEach(btn => {
+				btn.addEventListener('click', function() {
+					const index = this.dataset.index;
+					const item = cart[index];
+					
+					// Get available stock from the DOM (stored as data attribute)
+					const stockInfo = this.parentElement.querySelector('[data-available-stock]');
+					const availableStock = stockInfo ? parseInt(stockInfo.dataset.availableStock) : 999;
+					
+					if (item.quantity < availableStock) {
+						item.quantity++;
+						saveCart();
+						updateCartDisplay();
+					} else {
+						alert('Cannot add more items. Maximum available stock: ' + availableStock);
+					}
+				});
+			});
+
+			document.querySelectorAll('.remove-btn').forEach(btn => {
+				btn.addEventListener('click', function() {
+					const index = this.dataset.index;
+					cart.splice(index, 1);
+					saveCart();
+					updateCartDisplay();
+				});
+			});
+
+			checkoutBtn.disabled = false;
+		}
+
+		// Update checkout button state after display update
+		if (typeof updateCheckoutButtonState === 'function') {
+			updateCheckoutButtonState();
+		}
+	}
+
+	// Save cart to localStorage
+	function saveCart() {
+		localStorage.setItem('smartpayCart', JSON.stringify(cart));
+	}
+
+	// Toggle cart sidebar
+	cartToggleBtn.addEventListener('click', function() {
+		cartSidebar.classList.toggle('active');
+		cartOverlay.classList.toggle('active');
+	});
+
+	// Close cart when close button or overlay is clicked
+	cartCloseBtn.addEventListener('click', function() {
+		cartSidebar.classList.remove('active');
+		cartOverlay.classList.remove('active');
+	});
+
+	cartOverlay.addEventListener('click', function() {
+		cartSidebar.classList.remove('active');
+		cartOverlay.classList.remove('active');
+	});
+
+	// Get modal elements
+	const checkoutModal = document.querySelector('.checkout-modal');
+	const modalOverlay = document.querySelector('.modal-overlay');
+	const modalCloseBtn = document.querySelector('.modal-close-btn');
+	const modalCancelBtn = document.querySelector('.modal-cancel-btn');
+	const modalConfirmBtn = document.querySelector('.modal-confirm-btn');
+	const modalItemsList = document.getElementById('modal-items-list');
+	const modalTotalAmount = document.querySelector('.modal-total-amount');
+	const modalBalanceAmount = document.querySelector('.modal-balance-amount');
+
+	// Function to get current student balance
+	async function getStudentBalance() {
+		try {
+			const response = await fetch('/student/balance', {
+				method: 'GET',
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest',
+					'Accept': 'application/json'
+				}
+			});
+
+			if (!response.ok) {
+				console.warn('Balance fetch returned status:', response.status);
+				return 0;
+			}
+
+			const data = await response.json();
+			console.log('Balance data from server:', data);
+			return parseFloat(data.balance) || 0;
+		} catch (error) {
+			console.error('Error fetching balance:', error);
+			return 0;
+		}
+	}
+
+	// Function to open checkout modal with cart summary
+	async function openCheckoutModal() {
+		if (cart.length === 0) return;
+
+		const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+		// Populate modal items
+		modalItemsList.innerHTML = cart.map((item, index) => `
+			<div class="modal-item">
+				<div>
+					<div class="modal-item-name">${item.name}</div>
+					<div class="modal-item-qty">Qty: ${item.quantity}</div>
+				</div>
+				<div class="modal-item-price">₱${(item.price * item.quantity).toFixed(2)}</div>
+			</div>
+		`).join('');
+
+		// Update total
+		modalTotalAmount.textContent = `₱${total.toFixed(2)}`;
+
+		// Get and update balance BEFORE showing modal
+		const balance = await getStudentBalance();
+		console.log('Setting balance to:', balance);
+		modalBalanceAmount.textContent = `₱${balance.toFixed(2)}`;
+
+		// Show modal
+		checkoutModal.classList.add('active');
+		modalOverlay.classList.add('active');
+	}
+
+	// Function to close modal
+	function closeCheckoutModal() {
+		checkoutModal.classList.remove('active');
+		modalOverlay.classList.remove('active');
+	}
+
+	// Modal close button
+	modalCloseBtn.addEventListener('click', function() {
+		closeCheckoutModal();
+	});
+
+	// Modal cancel button
+	modalCancelBtn.addEventListener('click', function() {
+		closeCheckoutModal();
+	});
+
+	// Close modal when overlay is clicked
+	modalOverlay.addEventListener('click', function(e) {
+		if (e.target === modalOverlay) {
+			closeCheckoutModal();
+		}
+	});
+
+	// Function to perform actual checkout (submit to backend)
+	async function performCheckout() {
+		if (cart.length === 0) return;
+
+		checkoutBtn.disabled = true;
+		modalConfirmBtn.disabled = true;
+		modalConfirmBtn.textContent = 'Processing...';
+
+		// Prepare cart data for submission
+		const checkoutData = {
+			items: cart.map(item => ({
+				id: item.id,
+				quantity: item.quantity
+			}))
+		};
+
+		// Get CSRF token from meta tag
+		const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+		try {
+			const response = await fetch('/student/checkout', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRF-TOKEN': csrfToken
+				},
+				body: JSON.stringify(checkoutData)
+			});
+
+			const data = await response.json();
+
+			if (data.success) {
+				// Clear cart on successful checkout
+				cart = [];
+				saveCart();
+				updateCartDisplay();
+
+				// Close cart sidebar and modal
+				cartSidebar.classList.remove('active');
+				cartOverlay.classList.remove('active');
+				closeCheckoutModal();
+
+				// Show success message
+				alert(`✓ ${data.message}\n\nOrder Amount: ₱${data.total_amount.toFixed(2)}\nStatus: ${data.status}`);
+			} else {
+				// Show error message
+				alert(`✗ ${data.message}`);
+				checkoutBtn.disabled = false;
+				modalConfirmBtn.disabled = false;
+				modalConfirmBtn.textContent = 'Confirm Order';
+			}
+		} catch (error) {
+			console.error('Checkout error:', error);
+			alert('An error occurred during checkout. Please try again.');
+			checkoutBtn.disabled = false;
+			modalConfirmBtn.disabled = false;
+			modalConfirmBtn.textContent = 'Confirm Order';
+		}
+	}
+
+	// Modal confirm button
+	modalConfirmBtn.addEventListener('click', function() {
+		performCheckout();
+	});
+
+	// Checkout button - opens modal instead of direct checkout
+	checkoutBtn.addEventListener('click', function(e) {
+		e.preventDefault();
+		openCheckoutModal();
+	});
+
+	// Function to update button state based on balance
+	async function updateCheckoutButtonState() {
+		const balance = await getStudentBalance();
+		const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+		if (balance < total && cart.length > 0) {
+			checkoutBtn.textContent = 'Insufficient Balance';
+			checkoutBtn.disabled = true;
+		} else if (cart.length === 0) {
+			checkoutBtn.textContent = 'Your Cart is Empty';
+			checkoutBtn.disabled = true;
+		} else {
+			checkoutBtn.textContent = 'Proceed to Checkout';
+			checkoutBtn.disabled = false;
+		}
+	}
+
+	// Update button state initially and whenever cart changes
+	updateCheckoutButtonState();
+	// Re-check balance every 2 seconds to ensure up-to-date status
+	setInterval(updateCheckoutButtonState, 2000);
+
+	// Expose addToCart function globally for use in product pages
+	window.addToCart = function(productId, productName, price, imagePath) {
+		const existingItem = cart.find(item => item.id === productId);
+
+		if (existingItem) {
+			existingItem.quantity++;
+		} else {
+			cart.push({
+				id: productId,
+				name: productName,
+				price: parseFloat(price),
+				image: imagePath,
+				quantity: 1
+			});
+		}
+
+		saveCart();
+		updateCartDisplay();
+
+		// Show cart to user
+		cartSidebar.classList.add('active');
+		cartOverlay.classList.add('active');
+	};
+
+	// Initial display
+	updateCartDisplay();
 });
 

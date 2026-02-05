@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\SalesData;
+use App\Models\PreOrder;
+use App\Models\Order;
 
 class StudentController extends Controller
 {
@@ -46,7 +49,27 @@ class StudentController extends Controller
         }
         return view('home', compact('student', 'dailySpending', 'recentOrders'));
     }
-
+    public function shop() {
+        $student = null;
+        if (session()->has('student_id')) {
+            $student = \App\Models\Student::find(session('student_id'));
+        }
+        
+        // Get all categories
+        $categories = \App\Models\Category::all();
+        
+        // Get selected category from query parameter
+        $selectedCategory = request('category');
+        
+        // Fetch products with optional category filter
+        $query = \App\Models\Product::query();
+        if ($selectedCategory && $selectedCategory != 'all') {
+            $query->where('CategoryID', $selectedCategory);
+        }
+        $products = $query->get();
+        
+        return view('shop', compact('student', 'products', 'categories', 'selectedCategory'));
+    }
     public function credit() {
         $student = null;
         if (session()->has('student_id')) {
@@ -244,4 +267,137 @@ class StudentController extends Controller
         $request->session()->flush();
         return redirect('/');
     }
+
+    /**
+     * Handle checkout of cart items
+     */
+    public function checkout(Request $request)
+    {
+        // Check if student is authenticated
+        if (!session()->has('student_id')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You must be logged in to proceed with checkout.'
+            ], 401);
+        }
+
+        $studentId = session('student_id');
+        $student = Student::find($studentId);
+
+        if (!$student) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Student not found.'
+            ], 404);
+        }
+
+        // Validate input
+        $cartItems = $request->input('items');
+        if (!is_array($cartItems) || empty($cartItems)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart is empty.'
+            ], 400);
+        }
+
+        // Calculate total and validate stock
+        $totalAmount = 0;
+        $products = [];
+        
+        foreach ($cartItems as $item) {
+            $product = \App\Models\Product::find($item['id']);
+            
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Product ID {$item['id']} not found."
+                ], 404);
+            }
+
+            // Check stock
+            $availableStock = $product->TotalPieces - ($product->StocksPerUnit ?? 0);
+            if ($availableStock < $item['quantity']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Not enough stock for {$product->ProductName}. Available: {$availableStock}, Requested: {$item['quantity']}"
+                ], 400);
+            }
+
+            $itemTotal = $product->Price * $item['quantity'];
+            $totalAmount += $itemTotal;
+            
+            $products[] = [
+                'product' => $product,
+                'quantity' => $item['quantity'],
+                'price' => $product->Price,
+                'subtotal' => $itemTotal
+            ];
+        }
+
+        // Check if student has sufficient balance
+        if ($student->Balance < $totalAmount) {
+            return response()->json([
+                'success' => false,
+                'message' => "Insufficient balance. You need ₱" . number_format($totalAmount, 2) . " but only have ₱" . number_format($student->Balance, 2)
+            ], 400);
+        }
+
+        try {
+            // Begin transaction
+            DB::beginTransaction();
+
+            // Create PreOrder with status PENDING (default)
+            $preOrder = PreOrder::createFromCart($studentId, $cartItems, $totalAmount);
+
+            // Create individual Order records for each product
+            foreach ($products as $item) {
+                Order::create([
+                    'StudentID' => $studentId,
+                    'OrderID' => $preOrder->OrderID,
+                    'ProductID' => $item['product']->ProductID,
+                    'Quantity' => $item['quantity'],
+                    'Price' => $item['price'],
+                    'OrderDate' => now(),
+                ]);
+            }
+
+            // NOTE: Stock and Balance are NOT deducted yet since order status is PENDING
+            // They will be deducted only when order status changes to COMPLETED
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Order created successfully! Order ID: {$preOrder->OrderID}",
+                'order_id' => $preOrder->OrderID,
+                'status' => $preOrder->Status,
+                'total_amount' => $totalAmount
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred during checkout: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getBalance() {
+        if (!session()->has('student_id')) {
+            return response()->json(['balance' => 0], 401);
+        }
+
+        $student = Student::find(session('student_id'));
+        
+        if (!$student) {
+            return response()->json(['balance' => 0], 404);
+        }
+
+        return response()->json([
+            'balance' => floatval($student->Balance) ?? 0
+        ]);
+    }
+
 }

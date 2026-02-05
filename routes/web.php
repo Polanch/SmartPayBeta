@@ -12,11 +12,14 @@ Route::get('/', function () {
 
 
 Route::middleware(['student'])->group(function () {
-    Route::get('/student/home', [StudentController::class, 'home']);
-    Route::get('/student/transaction', [StudentController::class, 'transaction']);
-    Route::get('/student/setting', [StudentController::class, 'setting']);
-    Route::post('/student/setting/update', [StudentController::class, 'update']);
-    Route::get('/student/credit', [StudentController::class, 'credit']);
+    Route::get('/student/home', [StudentController::class, 'home'])->name('student.home');
+    Route::get('/student/shop', [StudentController::class, 'shop'])->name('student.shop');
+    Route::get('/student/transaction', [StudentController::class, 'transaction'])->name('student.transaction');
+    Route::get('/student/setting', [StudentController::class, 'setting'])->name('student.setting');
+    Route::post('/student/setting/update', [StudentController::class, 'update'])->name('student.update');
+    Route::get('/student/credit', [StudentController::class, 'credit'])->name('student.credit');
+    Route::get('/student/balance', [StudentController::class, 'getBalance'])->name('student.balance');
+    Route::post('/student/checkout', [StudentController::class, 'checkout'])->name('student.checkout');
     Route::post('/payment/credit', [PaymentController::class, 'creditAdd'])->name('payment.credit');
     Route::post('/payment/gcash', [PaymentController::class, 'gcashPay'])->name('payment.gcash');
 });
